@@ -2,9 +2,9 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
 const users = [
-  { id: 1, name: "apollo", age: 12, isMarried: false },
-  { id: 2, name: "mohammad", age: 20, isMarried: true },
-  { id: 3, name: "ali", age: 36, isMarried: false },
+  { id: "1", name: "apollo", age: 12, isMarried: false },
+  { id: "2", name: "mohammad", age: 20, isMarried: true },
+  { id: "3", name: "ali", age: 36, isMarried: false },
 ];
 
 const typeDefs = `
@@ -27,12 +27,12 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-        getUser: () => {
+    getUser: () => {
       return users;
     },
     getUserById: (paent, args) => {
-      const { id } = args;
-      return users.filter((user) => user.id === id);
+      const id = args.id;
+      return users.find((user) => user.id === id);
     },
   },
   Mutation: {
