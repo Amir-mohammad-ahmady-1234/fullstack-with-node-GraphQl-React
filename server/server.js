@@ -1,10 +1,16 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
+const users = [
+  { id: 1, name: "apollo", age: 12, isMarried: false },
+  { id: 2, name: "mohammad", age: 20, isMarried: true },
+  { id: 3, name: "ali", age: 36, isMarried: false },
+];
+
 const typeDefs = `
     type Query {
         getUser: [User]
-        getUserByd(id: ID!): User
+        getUserById(id: ID!): User
     }
 
     type Mutation {
@@ -19,9 +25,32 @@ const typeDefs = `
     }
 `;
 
-const resolvers = {};
+const resolvers = {
+  Query: {
+        getUser: () => {
+      return users;
+    },
+    getUserById: (paent, args) => {
+      const { id } = args;
+      return users.filter((user) => user.id === id);
+    },
+  },
+  Mutation: {
+    createUser: (parent, args) => {
+      const { name, age, isMarried } = args;
+      const newUser = {
+        id: (users.length + 1).toString(),
+        name,
+        age,
+        isMarried,
+      };
 
-const server = ApolloServer({ typeDefs, resolvers });
+      users.push(newUser);
+    },
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
 
 const { url } = await startStandaloneServer(server, {
   listen: { port: 4000 },
